@@ -3,8 +3,7 @@
 
 CKEDITOR_CONFIGS - шаблон настроек редактора CKEditor
 """
-# Путь для загружаемых файлов, через CKEditor
-CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_UPLOAD_PATH = "uploads/"  # путь для загружаемых файлов, через CKEditor
 
 CKEDITOR_CONFIGS = {
     'default': {

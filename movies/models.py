@@ -68,6 +68,7 @@ class Movie(models.Model):
     directors = models.ManyToManyField(
         Actor, verbose_name='Режиссёр', related_name='film_director')
     actors = models.ManyToManyField(
+
         Actor, verbose_name='Актёры', related_name='film_actor')
     genres = models.ManyToManyField(Genre, verbose_name='Жанры')
     world_premiere = models.DateField(
@@ -144,7 +145,8 @@ class Rating(models.Model):
     star = models.ForeignKey(
         RatingStar, verbose_name='Звезда', on_delete=models.CASCADE)
     movie = models.ForeignKey(
-        Movie, verbose_name='Фильм', on_delete=models.CASCADE)
+        Movie, verbose_name='Фильм', on_delete=models.CASCADE,
+        related_name='ratings')
 
     def __str__(self):
         return f'{self.star} - {self.movie}'
@@ -161,9 +163,10 @@ class Review(models.Model):
     text = models.TextField(verbose_name='Сообщение', max_length=5000)
     parent = models.ForeignKey(
         'self', verbose_name='Родитель', on_delete=models.SET_NULL,
-        blank=True, null=True)
+        related_name='children', blank=True, null=True)
     movie = models.ForeignKey(
-        Movie, verbose_name='Фильм', on_delete=models.CASCADE)
+        Movie, verbose_name='Фильм', on_delete=models.CASCADE,
+        related_name='reviews')
 
     def __str__(self):
         return f'{self.name} - {self.movie}'
