@@ -68,7 +68,6 @@ class Movie(models.Model):
     directors = models.ManyToManyField(
         Actor, verbose_name='Режиссёр', related_name='film_director')
     actors = models.ManyToManyField(
-
         Actor, verbose_name='Актёры', related_name='film_actor')
     genres = models.ManyToManyField(Genre, verbose_name='Жанры')
     world_premiere = models.DateField(

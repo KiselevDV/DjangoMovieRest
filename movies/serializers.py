@@ -41,7 +41,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         # Фильтрация ответа - вывод только родительских отзывов
         list_serializer_class = FilterReviewListSerializer
         model = Review
-        fields = ('name', 'text', 'children')
+        fields = ('id', 'name', 'text', 'children')
 
 
 class ActorListSerializer(serializers.ModelSerializer):
@@ -69,7 +69,7 @@ class MovieListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
         fields = ('id', 'title', 'tagline', 'category', 'rating_user',
-                  'middle_star')
+                  'middle_star', 'poster')
 
 
 class MovieDetailSerializer(serializers.ModelSerializer):

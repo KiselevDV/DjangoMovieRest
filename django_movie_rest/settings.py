@@ -39,24 +39,26 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # local
+    'movies.apps.MoviesConfig',
+
     # 3rd part
     'rest_framework',
-    'rest_framework.authtoken',
+    'rest_framework.authtoken',  # обычные токены, хранятся в БД
 
     'ckeditor',
     'ckeditor_uploader',
 
     'django_filters',
+
     'djoser',
     'drf_yasg',
+
     'corsheaders',
 
     'oauth2_provider',
     'social_django',
     'rest_framework_social_oauth2',
-
-    # local
-    'movies.apps.MoviesConfig',
 ]
 
 MIDDLEWARE = [
@@ -166,31 +168,41 @@ SOCIAL_AUTH_VK_OAUTH2_SECRET = 'nsMuuQpIbGUfUjU6bFgh'
 SOCIAL_AUTH_VK_OAUTH2_API_VERSION = '5.131'
 
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.vk.VKOAuth2',
-    'rest_framework_social_oauth2.backends.DjangoOAuth2',
+    # Провайдер для работы бекэнда
+    # 'social_core.backends.vk.VKOAuth2',
+    # 'rest_framework_social_oauth2.backends.DjangoOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        # Обычная аутентификация
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+
+        # Обычные токены - записываются в БД (всегда активны)
         'rest_framework.authentication.TokenAuthentication',
+
+        # Временные из библиотеки Simple JWT
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
-        'rest_framework_social_oauth2.authentication.SocialAuthentication',
+
+        # Подключение социальной авторизации
+        # 'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+        # 'rest_framework_social_oauth2.authentication.SocialAuthentication',
     ),
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
     'DEFAULT_PAGINATION_CLASS':
         'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 3
+    'PAGE_SIZE': 5  # кол-во элементов на странице
 }
 
 # smtp
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = '...@gmail.com'
-EMAIL_HOST_PASSWORD = '...'
+EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = 587
 
 # Токены
@@ -201,19 +213,20 @@ DJOSER = {
     'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
     # Подтвеждение активации
     'ACTIVATION_URL': '#/activate/{uid}/{token}',
-    # Подтвеждение активации по отправке email
+    # Подтвеждение создание пользователя по email
     'SEND_ACTIVATION_EMAIL': True,
     'SERIALIZERS': {},
 }
 
 SIMPLE_JWT = {
+    # Время жизни токенов (ACCESS - доступа к ресурсу, REFRESH - обновления)
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,
     'UPDATE_LAST_LOGIN': False,
 
-    'ALGORITHM': 'HS256',
+    'ALGORITHM': 'HS256',  # шифрование
     'SIGNING_KEY': SECRET_KEY,
     'VERIFYING_KEY': None,
     'AUDIENCE': None,
@@ -221,7 +234,7 @@ SIMPLE_JWT = {
     'JWK_URL': None,
     'LEEWAY': 0,
 
-    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_TYPES': ('Bearer', 'JWT'),  # тип заголовка токена
     'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',

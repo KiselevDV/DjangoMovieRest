@@ -3,6 +3,7 @@ ReadOnlyModelViewSet - вывод списка и одной записи
 """
 from django.db import models
 
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.viewsets import (ReadOnlyModelViewSet, ModelViewSet)
 
 from django_filters.rest_framework import DjangoFilterBackend
@@ -15,7 +16,7 @@ from .serializers import (
 from .service import get_client_ip, MovieFilter, PaginationMovies
 
 
-# То же через viewsets классы: ...
+# То же через viewsets классы: ReadOnlyModelViewSet, ModelViewSet ...
 class ActorsViewSet(ReadOnlyModelViewSet):
     """Вывод всех актёров или режиссёров"""
     queryset = Actor.objects.all()
@@ -35,6 +36,8 @@ class MovieViewSet(ReadOnlyModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filterset_class = MovieFilter
     pagination_class = PaginationMovies
+
+    # permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         movies = Movie.objects.filter(draft=False).annotate(
